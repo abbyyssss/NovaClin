@@ -12,4 +12,13 @@ cep CHAR(8)NULL,
 oberservacoes VARCHAR(100) NULL
 );
 
-DROP TABLE paciente
+CREATE TABLE recepcionista(
+idRecepcionista INT NOT NULL PRIMARY KEY,
+nome VARCHAR(50) NOT NULL,
+cpf CHAR(11) NOT NULL UNIQUE ,
+login VARCHAR(20) NOT NULL UNIQUE ,
+senha CHAR(6) NOT NULL,
+celular CHAR(11) NULL
+);
+
+SHOW TABLES
