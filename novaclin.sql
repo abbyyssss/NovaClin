@@ -1,4 +1,4 @@
-senaclinsenaclinsenaclinnovaclinnovaclinCREATE TABLE paciente(
+CREATE TABLE paciente(
 idPaciente int PRIMARY KEY NOT NULL ,
 nome VARCHAR(50) NOT NULL,
 cpf CHAR(11)  NOT NULL UNIQUE ,
