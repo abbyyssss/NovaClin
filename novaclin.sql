@@ -79,7 +79,7 @@ SELECT * FROM consulta
 SELECT * FROM exame
 
 /*questão 1-Inserir de forma implícita 8 pacientes*/
-INSERT INTO paciente
+INSERT INTO paciente      
 VALUES (1,'Donald','12345678901','98872773211' ,'donaldduck@gmail.com','rua luiz cunha','123','ap2','Santos','87654321','rua perigosa', 'SP'),
     (2,'Margarida','09876543212','988728808' ,'margarida@gmail.com','rua morgan cunha','321','ap3','São Vicente','12345678','rua segura', 'SP'),
     (3,'Patinhas','54637281901 ','988704605' ,'	patinhas@gmail.com','rua pedro cunha','222','ap4','Santos','22187635','', 'SP'),
@@ -348,3 +348,289 @@ FROM consulta c
 JOIN medico m ON c.idMedico = m.idMedico
 JOIN especialidade e ON m.IdEspecialidade = e.idEspecialidade
 GROUP BY e.nomeEspecialidade;
+
+
+/*atividade 4*/
+
+/*1- Criar uma view que traga nome e contatos (telefones e pacientes) em ordem alfabética: */
+
+CREATE VIEW vw_nome_contatos AS
+SELECT nome, cpf AS telefone, cel AS celular
+FROM paciente
+ORDER BY nome;
+
+SELECT * FROM vw_nome_contatos;
+
+
+
+DROP VIEW vw_nome_contatos;
+
+
+/*2- Criar uma view que traga a quantidade de consultas agrupadas por especialidade:*/
+
+CREATE VIEW vw_qtde_consultas_por_especialidade AS
+SELECT e.nomeEspecialidade AS especialidade, COUNT(c.idConsulta) AS quantidade_consultas
+FROM consulta c
+JOIN medico m ON c.idMedico = m.idMedico
+JOIN especialidade e ON m.IdEspecialidade = e.idEspecialidade
+GROUP BY e.nomeEspecialidade;
+
+SELECT * FROM vw_qtde_consultas_por_especialidade;
+
+/*3- Criar uma procedure que permita saber quantos médicos possuímos por especialidade:*/
+
+
+
+CREATE PROCEDURE sp_quantidade_medicos_por_especialidade(IN nomeEspecialidade VARCHAR(30))
+    SELECT COUNT(*) AS quantidade_medicos
+    FROM medico m
+    JOIN especialidade e ON m.IdEspecialidade = e.idEspecialidade
+    WHERE e.nomeEspecialidade = nomeEspecialidade;
+
+
+CALL sp_quantidade_medicos_por_especialidade('Cardiologista');
+
+/*4- Criar uma procedure para resetar todas as senhas dos médicos para DOCTOR:*/
+
+
+CREATE PROCEDURE sp_resetar_senhas_medicos()
+    UPDATE medico
+    SET senha = 'DOCTOR';
+
+CALL sp_resetar_senhas_medicos();
+
+SELECT * FROM medico
+
+/*5- Criar uma procedure para alterar as informações de paciente:*/
+
+
+CREATE PROCEDURE puAlterarInfoPaciente(
+    IN p_nome VARCHAR(50),
+    IN p_logradouro VARCHAR(30),
+    IN p_numero VARCHAR(6),
+    IN p_complemento VARCHAR(10),
+    IN p_cidade VARCHAR(20),
+    IN p_cpf CHAR(11)
+)
+
+    UPDATE paciente
+    SET logradouro = p_logradouro,
+        numero = p_numero,
+        complemento = p_complemento,
+        cidade = p_cidade
+    WHERE cpf = p_cpf AND nome = p_nome;
+
+CALL puAlterarInfoPaciente('Minie', 'nova rua', '456', 'ap10', 'São Paulo', '00998877665');
+
+SELECT * FROM paciente /*Minie foi alterada*/
+
+/** em caso de erro /
+/* Atualizar Donald */
+UPDATE paciente
+SET nome = 'Donald',
+    cpf = '12345678901',
+    cel = '98872773211',
+    email = 'donaldduck@gmail.com',
+    logradouro = 'rua luiz cunha',
+    numero = '123',
+    complemento = 'ap2',
+    cidade = 'Santos',
+    cep = '87654321',
+    oberservacoes = 'rua perigosa',
+    estado = 'SP'
+WHERE idPaciente = 1;
+
+/* Atualizar Margarida */
+UPDATE paciente
+SET nome = 'Margarida',
+    cpf = '09876543212',
+    cel = '988728808',
+    email = 'margarida@gmail.com',
+    logradouro = 'rua morgan cunha',
+    numero = '321',
+    complemento = 'ap3',
+    cidade = 'São Vicente',
+    cep = '12345678',
+    oberservacoes = 'rua segura',
+    estado = 'SP'
+WHERE idPaciente = 2;
+
+/* Atualizar Patinhas */
+UPDATE paciente
+SET nome = 'Patinhas',
+    cpf = '54637281901',
+    cel = '988704605',
+    email = 'patinhas@gmail.com',
+    logradouro = 'rua pedro cunha',
+    numero = '222',
+    complemento = 'ap4',
+    cidade = 'Santos',
+    cep = '22187635',
+    oberservacoes = '',
+    estado = 'SP'
+WHERE idPaciente = 3;
+
+/* Atualizar Huguinho */
+UPDATE paciente
+SET nome = 'Huguinho',
+    cpf = '98735102811',
+    cel = '83209864571',
+    email = 'huguinho@gmail,com',
+    logradouro = 'rua don pedro',
+    numero = '111',
+    complemento = 'ap5',
+    cidade = 'Cubatão',
+    cep = '09872144',
+    oberservacoes = '',
+    estado = 'SP'
+WHERE idPaciente = 4;
+
+/* Atualizar Luizinho */
+UPDATE paciente
+SET nome = 'Luizinho',
+    cpf = '03761528391',
+    cel = '92823716273',
+    email = 'luizinho@gmail,com',
+    logradouro = 'rua macaco prego',
+    numero = '333',
+    complemento = 'ap6',
+    cidade = 'Praia Grande',
+    cep = '99999999',
+    oberservacoes = '',
+    estado = 'SP'
+WHERE idPaciente = 5;
+
+/* Atualizar Zezinho */
+UPDATE paciente
+SET nome = 'Zezinho',
+    cpf = '93726615229',
+    cel = '8372716382',
+    email = 'zezinho@gmail.com',
+    logradouro = 'rua bras cubas',
+    numero = '342',
+    complemento = 'ap7',
+    cidade = 'São João del Rei',
+    cep = '09182771',
+    oberservacoes = '',
+    estado = 'MG'
+WHERE idPaciente = 6;
+
+/* Atualizar Mickey */
+UPDATE paciente
+SET nome = 'Mickey',
+    cpf = '12334455667',
+    cel = '827193936541',
+    email = 'mickey@gmail.com',
+    logradouro = 'rua jeffrey',
+    numero = '444',
+    complemento = 'ap8',
+    cidade = 'Rio de Janeiro',
+    cep = '32919999',
+    oberservacoes = '',
+    estado = 'RJ'
+WHERE idPaciente = 7;
+
+/* Atualizar Minie */
+UPDATE paciente
+SET nome = 'Minie',
+    cpf = '00998877665',
+    cel = '8273621823931',
+    email = 'minie@gmail.com',
+    logradouro = 'casa da minie',
+    numero = '555',
+    complemento = '',
+    cidade = 'São Paulo',
+    cep = '01112333',
+    oberservacoes = '',
+    estado = 'SP'
+WHERE idPaciente = 8;
+
+/*6- Criar uma procedure para inserir uma consulta na clínica.*/
+
+CREATE PROCEDURE piInserirConslta(
+    IN p_idPaciente INT,
+    IN p_idRecepcionista INT,
+    IN p_idMedico INT,
+    IN p_dataHoraConsulta DATETIME,
+    IN p_sintomas VARCHAR(200),
+    IN p_prescricao VARCHAR(200)
+)
+    INSERT INTO consulta (idPaciente, idRecepcionista, idMedico, dataHoraConsulta, sintomas, prescricao)
+    VALUES (p_idPaciente, p_idRecepcionista, p_idMedico, p_dataHoraConsulta, p_sintomas, p_prescricao);
+
+CALL piInserirConslta(3, 1, 1, '2024-06-30 15:00:00', 'Dor no peito', 'Eletrocardiograma');
+CALL piInserirConslta(3, 1, 2, '2024-07-01 16:00:00', 'Dor nas costas', 'Raio-X coluna');
+
+
+SELECT * FROM consulta
+
+/*7-Criar uma procedure para excluir um exame do sistema. (Obs - Sabemos que na prática
+deveremos utilizar a exclusão lógica). */
+
+CREATE PROCEDURE pd_DelExame(
+    IN p_idExame INT
+)
+    DELETE FROM exame
+    WHERE idExame = p_idExame;
+
+CALL pd_DelExame(3); /*ID do exame a ser deletado é 3*/
+SELECT * FROM exame
+
+/*8- Criar uma procedure que liste a data da consulta e o nome do paciente de acordo com
+o nome do médico. Aqui, listaremos a agenda do médico. Execute a procedure. */
+
+CREATE PROCEDURE ps_AgendaMedico(
+    IN p_nomeMedico VARCHAR(50)
+)
+
+    SELECT c.dataHoraConsulta, p.nome AS nome_paciente
+    FROM consulta c
+    JOIN medico m ON c.idMedico = m.idMedico
+    JOIN paciente p ON c.idPaciente = p.idPaciente
+    WHERE m.nome = p_nomeMedico
+    ORDER BY c.dataHoraConsulta;
+
+CALL ps_AgendaMedico ('Zé Carioca');
+
+/*9- Criar um mecanismo para trazer a quantidade de médicos que a clínica possui por
+especialidade. Execute o mecanismo.*/
+
+CREATE PROCEDURE ps_MedicoEspecialidade()
+    SELECT e.nomeEspecialidade AS especialidade, COUNT(*) AS quantidade_medicos
+    FROM medico m
+    JOIN especialidade e ON m.IdEspecialidade = e.idEspecialidade
+    GROUP BY e.nomeEspecialidade;
+
+CALL ps_MedicoEspecialidade ();
+
+/*10-Criar uma procedure que liste a data da consulta, o celular do paciente e a
+especialidade da consulta de acordo com o nome do paciente informado, mas em
+ordem cronológica. Neste caso estaremos verificando todas as consultas do paciente. */
+
+CREATE PROCEDURE ps_pacienteEspecialidadeConsulta(
+    IN p_nomePaciente VARCHAR(50)
+)
+    SELECT c.dataHoraConsulta, p.cel AS celular_paciente, e.nomeEspecialidade AS especialidade
+    FROM consulta c
+    JOIN medico m ON c.idMedico = m.idMedico
+    JOIN paciente p ON c.idPaciente = p.idPaciente
+    JOIN especialidade e ON m.IdEspecialidade = e.idEspecialidade
+    WHERE p.nome = p_nomePaciente
+    ORDER BY c.dataHoraConsulta;
+
+CALL ps_pacienteEspecialidadeConsulta('Minie');
+
+/*desafio- Criar uma procedure que sirva para atualizar a data de uma consulta. A procedure
+deve receber ID da consulta e a data e hora para a qual queremos trocar.*/
+
+CREATE PROCEDURE pu_alterarDataConsulta(
+    IN p_idConsulta INT,
+    IN p_newDateTime DATETIME
+)
+    UPDATE consulta
+    SET dataHoraConsulta = p_newDateTime
+    WHERE idConsulta = p_idConsulta;
+
+CALL pu_alterarDataConsulta (1, '2024-06-25 12:00:00'); -- Atualizando a consulta do Donald para 25 de junho às 12:00
+
+SELECT * FROM consulta
