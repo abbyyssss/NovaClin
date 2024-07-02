@@ -631,6 +631,6 @@ CREATE PROCEDURE pu_alterarDataConsulta(
     SET dataHoraConsulta = p_newDateTime
     WHERE idConsulta = p_idConsulta;
 
-CALL pu_alterarDataConsulta (1, '2024-06-25 12:00:00'); -- Atualizando a consulta do Donald para 25 de junho às 12:00
+CALL pu_alterarDataConsulta (1, '2024-06-25 12:00:00'); /* Atualizando a consulta do Donald para 25 de junho às 12:00*/
 
 SELECT * FROM consulta
